@@ -1,6 +1,10 @@
 import api from '~api'
 
+const url = process.env.VITE_API_URL || 'https://uprent.nl/'
+const domain = process.env.VITE_API_DOMAIN || 'uprent.nl'
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
     if (message.type === 'GET_COMMUTE_TIME') {
         (async () => {
             const { data, error } = await api.commute.durations.get();
@@ -11,7 +15,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'GET_COOKIE') {
         console.log('GET_COOKIE', message.name);
         chrome.cookies.get({
-            url: 'https://uprent.nl/',
+            url: url,
             name: message.name,
         }, (cookie) => {
             // sendResponse({ value: cookie ? cookie.value : '' });
@@ -24,10 +28,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'SET_COOKIE') {
         console.log('SET_COOKIE', message.name, message.value);
         chrome.cookies.set({
-            url: 'https://uprent.nl/',
+            url: url,
             name: message.name,
             value: message.value,
-            domain: 'uprent.nl',
+            domain: domain,
             path: '/',
             expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime(), // 30 days
         }, (cookie) => {

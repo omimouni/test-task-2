@@ -5,6 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import { compileManifest } from './config/compile-manifest'
 import { copyAssets } from './config/copy-assets'
 import { preprocessFonts } from './config/preprocess-fonts'
+import { loadEnv } from 'vite'
 
 const resolve = {
   alias: [
@@ -24,9 +25,24 @@ const resolve = {
 }
 
 export default defineConfig(({ mode }): UserConfig => {
+
+  const env = loadEnv(mode, process.cwd(), '')
   if (mode === 'service-worker') {
     return {
-      plugins: [tsconfigPaths()],
+      plugins: [
+        tsconfigPaths(),
+        {
+          name: 'define-env',
+          config() {
+            return {
+              define: {
+                'process.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL),
+                'process.env.VITE_API_DOMAIN': JSON.stringify(env.VITE_API_DOMAIN),
+              }
+            }
+          }
+        },
+      ],
       build: {
         sourcemap: true,
         emptyOutDir: false,
@@ -57,7 +73,7 @@ export default defineConfig(({ mode }): UserConfig => {
           await compileManifest()
           copyAssets()
         },
-      },
+      }
     ],
     build: {
       chunkSizeWarningLimit: 1200,

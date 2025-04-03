@@ -15,6 +15,9 @@ const config = {
     },
   }),
   kit: {
+    env: {
+      publicPrefix: 'VITE_',
+    },
     adapter: adapter({
       out: '.build',
     }),
