@@ -12,7 +12,7 @@
 
     console.log('setCookie', name, value, 'is_extension', is_extension);
     if (!is_extension) {
-      document.cookie = `${name}=${value}; path=/; domain=localhost; expires=Fri, 31 Dec 9999 23:59:59 GMT`
+      document.cookie = `${name}=${value}; path=/; domain=uprent.nl; expires=Fri, 31 Dec 9999 23:59:59 GMT`
 
       return true;
     }

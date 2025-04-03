@@ -39,7 +39,7 @@ export default {
 
         // add the base styles to the app
         addBase(baseStyles.nodes);
-        console.log("Successfully added base styles");
+        // console.log("Successfully added base styles");
       } catch (error) {
         console.error("Error in Tailwind plugin:", error);
       }

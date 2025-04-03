@@ -14,8 +14,7 @@
   "host_permissions": [
     "https://www.pararius.com/",
     "https://www.pararius.nl/",
-    "http://localhost:*/*",
-    "https://localhost:*/*"
+    "https://uprent.nl/"
   ],
   "action": {
     "default_icon": "icons/192x192.png"

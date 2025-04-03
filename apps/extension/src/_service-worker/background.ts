@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'GET_COOKIE') {
         console.log('GET_COOKIE', message.name);
         chrome.cookies.get({
-            url: 'http://localhost:5000',
+            url: 'https://uprent.nl/',
             name: message.name,
         }, (cookie) => {
             // sendResponse({ value: cookie ? cookie.value : '' });
@@ -24,9 +24,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'SET_COOKIE') {
         console.log('SET_COOKIE', message.name, message.value);
         chrome.cookies.set({
-            url: 'http://localhost:5000',
+            url: 'https://uprent.nl/',
             name: message.name,
             value: message.value,
+            domain: 'uprent.nl',
             path: '/',
             expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime(), // 30 days
         }, (cookie) => {
