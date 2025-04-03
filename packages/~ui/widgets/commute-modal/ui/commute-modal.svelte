@@ -51,16 +51,34 @@
       return true
     }
 
-    const cookie: boolean = await new Promise<boolean>((resolve) => {
-      chrome.runtime.sendMessage(
-        { type: 'SET_COOKIE', name, value },
-        response => {
-          resolve(response.success)
-        },
-      )
-    })
+    try {
+      const cookie: boolean = await new Promise<boolean>((resolve, reject) => {
+        chrome.runtime.sendMessage(
+          { type: 'SET_COOKIE', name, value },
+          response => {
+            // Check if runtime.lastError exists
+            if (chrome.runtime.lastError) {
+              console.error('Chrome extension error:', chrome.runtime.lastError)
+              resolve(false) // Return false instead of rejecting to handle gracefully
+              return
+            }
+            
+            // Check if response exists and has success property
+            if (response && typeof response.success === 'boolean') {
+              resolve(response.success)
+            } else {
+              console.error('Invalid response format:', response)
+              resolve(false)
+            }
+          }
+        )
+      })
 
-    return cookie
+      return cookie
+    } catch (error) {
+      console.error('Error setting cookie:', error)
+      return false
+    }
   }
 
   const getCookie = async (name: string): Promise<string> => {
@@ -73,13 +91,31 @@
       )
     }
 
-    const cookie: string = await new Promise<string>((resolve) => {
-      chrome.runtime.sendMessage({ type: 'GET_COOKIE', name }, response => {
-        resolve(response.value)
-      })
-    })
+    try {
+      const cookie: string = await new Promise<string>((resolve) => {
+        chrome.runtime.sendMessage({ type: 'GET_COOKIE', name }, response => {
+          // Check if runtime.lastError exists
+          if (chrome.runtime.lastError) {
+            console.error('Chrome extension error:', chrome.runtime.lastError)
+            resolve('')
+            return
+          }
 
-    return cookie
+          // Check if response exists and has value property
+          if (response && typeof response.value === 'string') {
+            resolve(response.value)
+          } else {
+            console.error('Invalid response format:', response)
+            resolve('')
+          }
+        })
+      })
+
+      return cookie
+    } catch (error) {
+      console.error('Error getting cookie:', error)
+      return ''
+    }
   }
 
   onMount(async () => {
@@ -123,6 +159,7 @@
         tmpAddresses[1] = ''
       }
     } else {
+      console.log('saving preferences', tmpCommutePreferences)
       commutePreferences = { ...tmpCommutePreferences }
       for (const [mode, value] of Object.entries(tmpCommutePreferences)) {
         await setCookie(`commute-${mode}`, value)
