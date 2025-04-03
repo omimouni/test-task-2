@@ -1,5 +1,4 @@
 <script lang="ts">
-  import api from '~api'
   import type { Durations } from '~core/database'
   import { RouteSVG } from '~ui/assets'
   import { Button } from '~ui/components'
@@ -9,7 +8,11 @@
 
   const load = async () => {
     loading = true
-    const { data, error } = await api.commute.durations.get()
+
+    const { data, error } = await chrome.runtime.sendMessage({
+      type: 'GET_COMMUTE_TIME',
+    });
+
     loading = false
 
     if (error || data.status === 'error') return
