@@ -69,9 +69,18 @@
   <div
     class=".fixed .inset-0 .z-[9999] .flex .h-screen .w-screen .items-center .justify-center .bg-black/50 .backdrop-blur-sm"
   >
-    <div class=".w-[500px] .bg-white .p-4 .duration-300">
+    <button
+      class=".absolute .h-screen .w-screen .bg-transparent"
+      on:click={() => commuteStore.toggleOpen()}
+      aria-label="Close"
+    >
+    </button>
+    <div class=".w-[500px] .z-[10] .bg-white .p-4 .duration-300">
       <div>
-        <h1>Commute Modal</h1>
+        <div class=".flex .items-center .justify-between">
+          <h1>Commute Modal</h1>
+          <Button onClick={() => commuteStore.toggleOpen()}>X</Button>
+        </div>
 
         <div>
           {#each $commuteStore.addresses as address}

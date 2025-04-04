@@ -2,6 +2,7 @@
   import type { Durations } from '~core/database'
   import { Button } from '~ui/components'
   import { RouteSVG } from '~ui/assets'
+  import { commuteStore } from '~ui/stores'
 
   export let onLoad: () => Promise<{
     data:
@@ -32,12 +33,18 @@
   }
 </script>
 
-<div>
+<div class=".p-2">
   {#if !durations}
-    <Button primary {loading} onClick={load}>
-      <RouteSVG slot="icon" />
-      Load commutes
-    </Button>
+    <div class=".flex .items-center .gap-1" >
+      <Button primary {loading} onClick={load} disabled={$commuteStore.addresses.length === 0}>
+        <RouteSVG slot="icon" />
+        Load commutes
+      </Button>
+      <Button onClick={() => commuteStore.toggleOpen()}>C</Button>
+    </div>
+    {#if $commuteStore.addresses.length === 0}
+      <p class=".text-gray-500 .text-right .mt-2 .text-xs">No addresses added</p>
+    {/if}
   {:else}
     {JSON.stringify(durations, null, 2)}
   {/if}
