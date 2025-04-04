@@ -1,15 +1,29 @@
 import { writable } from 'svelte/store'
 
+export type Maxtime = {
+  driving: number | null
+  transit: number | null
+  biking: number | null
+  walking: number | null
+}
+
 export type CommuteStore = {
   isLoading: boolean
   isOpen: boolean
   addresses: string[]
+  maxtime: Maxtime
 }
 
 const initialState: CommuteStore = {
   isLoading: true,
   isOpen: false,
   addresses: [],
+  maxtime: {
+    driving: null,
+    transit: null,
+    biking: null,
+    walking: null,
+  },
 }
 
 /**
@@ -40,6 +54,18 @@ const createCommuteStore = () => {
   const setAddresses = (addresses: string[]) =>
     update(state => ({ ...state, addresses }))
 
+  // TODO: make this dynamic
+  const setMaxtime = (maxtime: Maxtime) => update(state => ({ ...state, maxtime }))
+  const setMaxtimeDriving = (driving: number | null) =>
+    update(state => ({ ...state, maxtime: { ...state.maxtime, driving } }))
+  const setMaxtimeTransit = (transit: number | null) =>
+    update(state => ({ ...state, maxtime: { ...state.maxtime, transit } }))
+  const setMaxtimeBiking = (biking: number | null) =>
+    update(state => ({ ...state, maxtime: { ...state.maxtime, biking } }))
+  const setMaxtimeWalking = (walking: number | null) =>
+    update(state => ({ ...state, maxtime: { ...state.maxtime, walking } }))
+
+
   return {
     subscribe,
     setOpen,
@@ -49,6 +75,11 @@ const createCommuteStore = () => {
     removeAddress,
     editAddress,
     setAddresses,
+    setMaxtime,
+    setMaxtimeDriving,
+    setMaxtimeTransit,
+    setMaxtimeBiking,
+    setMaxtimeWalking,
   }
 }
 
