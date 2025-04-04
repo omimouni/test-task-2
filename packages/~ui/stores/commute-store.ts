@@ -13,7 +13,7 @@ const STORAGE_KEY_MAXTIME = 'commuteMaxtime'
 export type Maxtime = {
   driving: number | null
   transit: number | null
-  biking: number | null
+  biking: null | null
   walking: number | null
 }
 
@@ -83,8 +83,15 @@ const createCommuteStore = () => {
   const saveAddressesToLocalStorage = async (addresses: string[]) => {
     const isExtension = get(commuteStore).isExtension;
     if (isExtension) {
-      console.log('saveAddressesToLocalStorage', addresses);
-      await chrome.runtime.sendMessage({ type: 'SET_COOKIE', name: STORAGE_KEY, value: JSON.stringify(addresses), url: 'http://localhost:5000', domain: 'localhost', path: '/', expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime() })
+      await chrome.runtime.sendMessage({ 
+        type: 'SET_COOKIE', 
+        name: STORAGE_KEY, 
+        value: JSON.stringify(addresses), 
+        url: 'http://localhost:5000', 
+        domain: 'localhost', 
+        path: '/', 
+        expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime() 
+      })
     } else {
       document.cookie = `${STORAGE_KEY}=${JSON.stringify(addresses)}; path=/; domain=localhost; expires=${new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toUTCString()}`
     }
@@ -93,8 +100,15 @@ const createCommuteStore = () => {
   const saveMaxtimeToLocalStorage = async (maxtime: Maxtime) => {
     const isExtension = get(commuteStore).isExtension;
     if (isExtension) {
-      console.log('saveMaxtimeToLocalStorage', maxtime);
-      await chrome.runtime.sendMessage({ type: 'SET_COOKIE', name: STORAGE_KEY_MAXTIME, value: JSON.stringify(maxtime), url: 'http://localhost:5000', domain: 'localhost', path: '/', expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime() })
+      await chrome.runtime.sendMessage({ 
+        type: 'SET_COOKIE', 
+        name: STORAGE_KEY_MAXTIME, 
+        value: JSON.stringify(maxtime), 
+        url: 'http://localhost:5000', 
+        domain: 'localhost', 
+        path: '/', 
+        expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime() 
+      })
     } else {
       document.cookie = `${STORAGE_KEY_MAXTIME}=${JSON.stringify(maxtime)}; path=/; domain=localhost; expires=${new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toUTCString()}`
     }
@@ -106,7 +120,6 @@ const createCommuteStore = () => {
    */
   const init = async () => {
     update(state => ({ ...state, isLoading: true }))
-
 
     // Check if the code is running in an extension
     if (chrome && typeof chrome !== 'undefined' && typeof chrome.runtime !== 'undefined' && typeof chrome.runtime.id !== 'undefined') {
@@ -133,7 +146,7 @@ const createCommuteStore = () => {
         name: STORAGE_KEY, 
         url: 'http://localhost:5000' 
       });
-      addresses = addressesCookie?.value ? JSON.parse(addressesCookie.value) : [];
+      addresses = addressesCookie?.data ? JSON.parse(addressesCookie.data) : [];
 
       // Get maxtime from extension cookie
       const maxtimeCookie = await chrome.runtime.sendMessage({ 
@@ -141,7 +154,7 @@ const createCommuteStore = () => {
         name: STORAGE_KEY_MAXTIME, 
         url: 'http://localhost:5000' 
       });
-      const maxtimeCookieObject = maxtimeCookie?.value ? JSON.parse(maxtimeCookie.value) : null;
+      const maxtimeCookieObject = maxtimeCookie?.data ? JSON.parse(maxtimeCookie.data) : null;
       if (maxtimeCookieObject) {
         maxtime = maxtimeCookieObject;
       }
