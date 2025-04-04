@@ -1,7 +1,15 @@
 <script lang="ts">
   import type { Durations } from '~core/database'
   import { Button } from '~ui/components'
-  import { RouteSVG } from '~ui/assets'
+  import { commuteStore } from '~ui/stores'
+  import {
+    BikeSVG,
+    CarSVG,
+    WalkSVG,
+    BusSVG,
+    RouteSVG,
+    SettingsSVG,
+  } from '~ui/assets'
 
   export let onLoad: () => Promise<{
     data:
@@ -32,13 +40,69 @@
   }
 </script>
 
-<div>
-  {#if !durations}
-    <Button primary {loading} onClick={load}>
-      <RouteSVG slot="icon" />
-      Load commutes
-    </Button>
-  {:else}
-    {JSON.stringify(durations, null, 2)}
-  {/if}
-</div>
+{#if $commuteStore.isLoading}
+  <span class=".bg-primary/50 .m-2 .rounded-full .h-fit .w-fit ">
+    <span class=".border-2 .border-transparent .border-t-primary .rounded-full .w-4 .block .aspect-square .animate-spin"></span>
+  </span>
+{:else}
+  <div class=".p-2">
+    {#if !durations}
+      <div class=".flex .items-center .gap-1">
+        <Button
+          primary
+          {loading}
+          onClick={load}
+          disabled={$commuteStore.addresses.length === 0}
+        >
+          <RouteSVG slot="icon" />
+          Load commutes
+        </Button>
+        <Button onClick={() => commuteStore.toggleOpen()}>
+          <SettingsSVG />
+        </Button>
+      </div>
+      {#if $commuteStore.addresses.length === 0}
+        <p class=".mt-2 .text-right .text-xs .text-gray-500">
+          No addresses added
+        </p>
+      {/if}
+    {:else}
+      <div class=".flex .w-fit .flex-col .gap-2">
+        <div class=".rounded .bg-primary .p-2 .px-4 .text-white">
+          <div class=".flex .flex-col .gap-2 .text-xs">
+            {#each durations as duration}
+              <div class="">
+                <span
+                  class=".block .text-ellipsis .text-center .text-xs .opacity-50"
+                >
+                  {duration.address}
+                </span>
+
+                <div class=".mt-1 .flex .items-center .gap-2">
+                  {#each Object.entries(duration.durations) as [mode, value]}
+                    <span
+                      class="{$commuteStore.maxtime[mode] > value
+                        ? '.bg-red-500'
+                        : ''} .flex .items-center .gap-1 .rounded .p-1"
+                    >
+                      {#if mode === 'biking'}
+                        <BikeSVG />
+                      {:else if mode === 'driving'}
+                        <CarSVG />
+                      {:else if mode === 'transit'}
+                        <BusSVG />
+                      {:else if mode === 'walking'}
+                        <WalkSVG />
+                      {/if}
+                      {value}
+                    </span>
+                  {/each}
+                </div>
+              </div>
+            {/each}
+          </div>
+        </div>
+      </div>
+    {/if}
+  </div>
+{/if}
