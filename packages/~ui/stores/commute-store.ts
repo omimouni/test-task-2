@@ -7,6 +7,11 @@ import { get } from 'svelte/store'
 const STORAGE_KEY = 'commuteAddresses'
 const STORAGE_KEY_MAXTIME = 'commuteMaxtime'
 
+
+const env = import.meta.env
+const URL = env.VITE_API_URL
+const DOMAIN = env.VITE_API_DOMAIN
+
 /**
  * Represents maximum commute times for different transportation modes
  */
@@ -83,14 +88,14 @@ const createCommuteStore = () => {
   const saveAddressesToLocalStorage = async (addresses: string[]) => {
     const isExtension = get(commuteStore).isExtension;
     if (isExtension) {
-      await chrome.runtime.sendMessage({ 
-        type: 'SET_COOKIE', 
-        name: STORAGE_KEY, 
-        value: JSON.stringify(addresses), 
-        url: 'http://localhost:5000', 
-        domain: 'localhost', 
-        path: '/', 
-        expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime() 
+      await chrome.runtime.sendMessage({
+        type: 'SET_COOKIE',
+        name: STORAGE_KEY,
+        value: JSON.stringify(addresses),
+        url: URL,
+        domain: DOMAIN,
+        path: '/',
+        expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime()
       })
     } else {
       document.cookie = `${STORAGE_KEY}=${JSON.stringify(addresses)}; path=/; domain=localhost; expires=${new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toUTCString()}`
@@ -100,14 +105,14 @@ const createCommuteStore = () => {
   const saveMaxtimeToLocalStorage = async (maxtime: Maxtime) => {
     const isExtension = get(commuteStore).isExtension;
     if (isExtension) {
-      await chrome.runtime.sendMessage({ 
-        type: 'SET_COOKIE', 
-        name: STORAGE_KEY_MAXTIME, 
-        value: JSON.stringify(maxtime), 
-        url: 'http://localhost:5000', 
-        domain: 'localhost', 
-        path: '/', 
-        expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime() 
+      await chrome.runtime.sendMessage({
+        type: 'SET_COOKIE',
+        name: STORAGE_KEY_MAXTIME,
+        value: JSON.stringify(maxtime),
+        url: URL,
+        domain: DOMAIN,
+        path: '/',
+        expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime()
       })
     } else {
       document.cookie = `${STORAGE_KEY_MAXTIME}=${JSON.stringify(maxtime)}; path=/; domain=localhost; expires=${new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toUTCString()}`
@@ -141,18 +146,18 @@ const createCommuteStore = () => {
 
     if (isExtension) {
       // Get addresses from extension cookie
-      const addressesCookie = await chrome.runtime.sendMessage({ 
-        type: 'GET_COOKIE', 
-        name: STORAGE_KEY, 
-        url: 'http://localhost:5000' 
+      const addressesCookie = await chrome.runtime.sendMessage({
+        type: 'GET_COOKIE',
+        name: STORAGE_KEY,
+        url: 'http://localhost:5000'
       });
       addresses = addressesCookie?.data ? JSON.parse(addressesCookie.data) : [];
 
       // Get maxtime from extension cookie
-      const maxtimeCookie = await chrome.runtime.sendMessage({ 
-        type: 'GET_COOKIE', 
-        name: STORAGE_KEY_MAXTIME, 
-        url: 'http://localhost:5000' 
+      const maxtimeCookie = await chrome.runtime.sendMessage({
+        type: 'GET_COOKIE',
+        name: STORAGE_KEY_MAXTIME,
+        url: 'http://localhost:5000'
       });
       const maxtimeCookieObject = maxtimeCookie?.data ? JSON.parse(maxtimeCookie.data) : null;
       if (maxtimeCookieObject) {
