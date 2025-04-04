@@ -20,4 +20,12 @@ export default defineConfig({
       },
     ],
   },
+
+  // I have problem with watchman in Mac M1
+  server: {
+    watch: {
+      usePolling: true,
+      interval: 1000,
+    },
+  },
 })
