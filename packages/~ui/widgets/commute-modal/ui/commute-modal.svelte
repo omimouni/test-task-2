@@ -2,9 +2,8 @@
   import { onMount } from 'svelte'
   import { Button, Input } from '~ui/components'
   import { commuteStore, type Maxtime } from '~ui/stores'
+  import { XSVG } from '~ui/assets'
 
-  const STORAGE_KEY = 'commuteAddresses'
-  const STORAGE_KEY_MAXTIME = 'commuteMaxtime'
   const MAX_ADDRESSES = 2
 
   let activeTab: 'addresses' | 'maxtime' = 'addresses'
@@ -12,33 +11,24 @@
   let newAddress = ''
   let editingAddress: string | null = null
   let editValue = ''
-  let maxtime = $commuteStore.maxtime
+  let maxtime = {
+    driving: null,
+    transit: null,
+    biking: null,
+    walking: null,
+  }
 
   onMount(() => {
-    const savedAddresses = localStorage.getItem(STORAGE_KEY)
-    if (savedAddresses) {
-      try {
-        const addresses = JSON.parse(savedAddresses)
-        commuteStore.setAddresses(addresses)
-      } catch (error) {
-        console.error('Failed to parse saved addresses:', error)
-      }
-    }
-
-    const savedMaxtime = localStorage.getItem(STORAGE_KEY_MAXTIME)
-    if (savedMaxtime) {
-      try {
-        const maxtimeTmp = JSON.parse(savedMaxtime)
-        commuteStore.setMaxtime(maxtimeTmp)
-        maxtime = maxtimeTmp
-      } catch (error) {
-        console.error('Failed to parse saved maxtime:', error)
-      }
-    }
+    commuteStore.init()
+    maxtime = $commuteStore.maxtime
   })
 
   const saveToLocalStorage = (addresses: string[]) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(addresses))
+    commuteStore.saveAddressesToLocalStorage(addresses)
+  }
+
+  const saveMaxtimeToLocalStorage = (maxtime: Maxtime) => {
+    commuteStore.saveMaxtimeToLocalStorage(maxtime)
   }
 
   const addAddress = () => {
@@ -78,10 +68,6 @@
       commuteStore.removeAddress(address)
       saveToLocalStorage($commuteStore.addresses)
     }
-  }
-
-  const saveMaxtimeToLocalStorage = (maxtime: Maxtime) => {
-    localStorage.setItem(STORAGE_KEY_MAXTIME, JSON.stringify(maxtime))
   }
 
   const saveMaxtime = () => {
@@ -177,6 +163,7 @@
               {/if}
             </div>
           {:else if activeTab === 'maxtime'}
+
             <div class=".flex .flex-col .gap-4">
               {#each Object.entries($commuteStore.maxtime) as [mode, value]}
                 <div
@@ -196,7 +183,7 @@
                       class=".hover:text-gray-700 .p-2 .text-gray-500 .transition-colors"
                       onClick={() => resetMaxtime(mode)}
                     >
-                      X
+                      <XSVG class=".w-4 .h-4" />
                     </Button>
                   {/if}
                 </div>
