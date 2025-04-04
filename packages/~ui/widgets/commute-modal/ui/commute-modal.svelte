@@ -62,7 +62,8 @@
     const addresses = $commuteStore.addresses.map(addr =>
       addr === editingAddress ? editValue.trim() : addr,
     )
-    $commuteStore.addresses = addresses
+    // $commuteStore.addresses = addresses
+    commuteStore.setAddresses(addresses)
     editingAddress = null
     saveToLocalStorage(addresses)
   }

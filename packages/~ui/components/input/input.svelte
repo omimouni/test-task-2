@@ -28,18 +28,18 @@
   }
 
   const handleFocus = () => {
-    console.log('focus')
+    // console.log('focus')
     isOpen = true
     getSuggestions(value)
   }
 
   const handleBlur = () => {
-    console.log('blur')
+    // console.log('blur')
     isOpen = false
   }
 
   const handleSuggestionClick = (suggestion: string) => {
-    console.log('suggestion clicked', suggestion)
+    // console.log('suggestion clicked', suggestion)
     value = suggestion
     isOpen = false
   }
@@ -51,16 +51,17 @@
     }
   }
 
-  //   TODO: add debounce
+  //   TODO: make this debounce more sophisticated // using lodash but don't want to add a dependency as requested per assignment
+  let debounceTimeout: NodeJS.Timeout
   const handleInputChange = (event: Event) => {
     const inputValue = (event.target as HTMLInputElement).value
-    getSuggestions(inputValue)
-    console.log('inputValue', inputValue)
+    clearTimeout(debounceTimeout)
+    debounceTimeout = setTimeout(() => {
+      getSuggestions(inputValue)
+    }, 300)
   }
 
-  onMount(() => {
-    console.log('input mounted')
-  })
+
 </script>
 
 <svelte:window on:click={handleClickOutside} />
