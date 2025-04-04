@@ -65,16 +65,16 @@
     <div class=".flex .w-fit .flex-col .gap-2">
       <div class=".rounded .bg-primary .p-2 .px-4 .text-white">
         <div class=".flex .flex-col .gap-2 .text-xs">
-          {#each $commuteStore.addresses as address}
+          {#each durations as duration}
             <div class="">
               <span class=".text-ellipsis .text-xs .opacity-50 .text-center .block">
-                {address}
+                {duration.address}
               </span>
 
               <div class=".mt-1 .flex .items-center .gap-2">
-                {#each Object.entries(durations) as [mode, duration]}
+                {#each Object.entries(duration.durations) as [mode, value]}
                   <span
-                    class="{$commuteStore.maxtime[mode] > duration ? '.bg-red-500' : ''} .p-1 .rounded .flex .items-center .gap-1"
+                    class="{$commuteStore.maxtime[mode] > value ? '.bg-red-500' : ''} .p-1 .rounded .flex .items-center .gap-1"
                   >
                     {#if mode === 'biking'}
                       <BikeSVG />
@@ -85,7 +85,7 @@
                     {:else if mode === 'walking'}
                       <WalkSVG />
                     {/if}
-                    {duration}
+                    {value}
                   </span>
                 {/each}
               </div>
