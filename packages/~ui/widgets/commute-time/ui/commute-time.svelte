@@ -40,6 +40,7 @@
   }
 </script>
 
+{$commuteStore.isExtension}
 {#if $commuteStore.isLoading}
   <span class=".bg-primary/50 .m-2 .rounded-full .h-fit .w-fit ">
     <span class=".border-2 .border-transparent .border-t-primary .rounded-full .w-4 .block .aspect-square .animate-spin"></span>

@@ -18,8 +18,9 @@
     walking: null,
   }
 
-  onMount(() => {
-    commuteStore.init()
+  onMount(async () => {
+    console.log('commuteStore.init()')
+    await commuteStore.init()
     maxtime = $commuteStore.maxtime
   })
 
