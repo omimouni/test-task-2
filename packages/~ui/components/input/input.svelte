@@ -28,25 +28,21 @@
   }
 
   const handleFocus = () => {
-    // console.log('focus')
     isOpen = true
     getSuggestions(value)
   }
 
   const handleBlur = () => {
-    // console.log('blur')
     isOpen = false
   }
 
   const handleSuggestionClick = (suggestion: string) => {
-    // console.log('suggestion clicked', suggestion)
     value = suggestion
     isOpen = false
   }
 
   const handleClickOutside = (event: MouseEvent) => {
     if (containerRef && !containerRef.contains(event.target as Node)) {
-      console.log('clicked outside')
       isOpen = false
     }
   }
