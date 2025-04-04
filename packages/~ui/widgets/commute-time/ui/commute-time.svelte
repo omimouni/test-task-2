@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { Durations } from '~core/database'
   import { Button } from '~ui/components'
-  import { RouteSVG } from '~ui/assets'
   import { commuteStore } from '~ui/stores'
+  import { BikeSVG, CarSVG, WalkSVG, BusSVG, RouteSVG, SettingsSVG } from '~ui/assets'
 
   export let onLoad: () => Promise<{
     data:
@@ -35,17 +35,57 @@
 
 <div class=".p-2">
   {#if !durations}
-    <div class=".flex .items-center .gap-1" >
-      <Button primary {loading} onClick={load} disabled={$commuteStore.addresses.length === 0}>
+    <div class=".flex .items-center .gap-1">
+      <Button
+        primary
+        {loading}
+        onClick={load}
+        disabled={$commuteStore.addresses.length === 0}
+      >
         <RouteSVG slot="icon" />
         Load commutes
       </Button>
-      <Button onClick={() => commuteStore.toggleOpen()}>C</Button>
+      <Button onClick={() => commuteStore.toggleOpen()}>
+        <SettingsSVG />
+      </Button>
     </div>
     {#if $commuteStore.addresses.length === 0}
-      <p class=".text-gray-500 .text-right .mt-2 .text-xs">No addresses added</p>
+      <p class=".mt-2 .text-right .text-xs .text-gray-500">
+        No addresses added
+      </p>
     {/if}
   {:else}
-    {JSON.stringify(durations, null, 2)}
+    <div class=".flex .flex-col .gap-2 .w-fit">
+      <div class=".rounded .bg-primary .p-2 .px-4 .text-white">
+        <div class=".flex .flex-col .gap-2 .text-xs">
+          {#each $commuteStore.addresses as address}
+            <div class="">
+              <span class=".text-xs .opacity-50 .text-ellipsis">
+                {address}
+              </span>
+
+              <div class=".flex .mt-1 .items-center .gap-5">
+                <span>
+                  <BikeSVG />
+                  {durations.biking}
+                </span>
+                <span>
+                  <CarSVG />
+                  {durations.driving}
+                </span>
+                <span>
+                  <BusSVG />
+                  {durations.transit}
+                </span>
+                <span>
+                  <WalkSVG />
+                  {durations.walking}
+                </span>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </div>
   {/if}
 </div>

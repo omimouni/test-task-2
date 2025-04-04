@@ -103,7 +103,7 @@
 
 {#if $commuteStore.isOpen}
   <div
-    class=".fixed .inset-0 .z-[9999] .flex .h-screen .w-screen .items-center .justify-center .bg-black/50 .backdrop-blur-sm"
+    class=".fixed uprent uprent-reset .inset-0 .z-[9999] .flex .h-screen .w-screen .items-center .justify-center .bg-black/50 .backdrop-blur-sm"
   >
     <button
       class=".absolute .h-screen .w-screen .bg-transparent"
