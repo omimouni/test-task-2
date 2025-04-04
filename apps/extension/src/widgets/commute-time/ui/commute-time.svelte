@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CommuteTime } from '~ui/widgets'
+  import { CommuteModal, CommuteTime } from '~ui/widgets'
 
   const onLoad = () =>
     chrome.runtime.sendMessage({
@@ -8,3 +8,4 @@
 </script>
 
 <CommuteTime {onLoad} />
+<CommuteModal />
