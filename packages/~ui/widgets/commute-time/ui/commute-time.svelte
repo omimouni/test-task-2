@@ -71,20 +71,30 @@
                 {address}
               </span>
 
+              <!-- TODO: find a way to make this dynamically, and make it a component -->
               <div class=".mt-1 .flex .items-center .gap-5">
-                <span>
+
+                <span
+                  class="{$commuteStore.maxtime.biking > durations.biking ? '.bg-red-500' : ''} .p-1 .rounded .flex .items-center .gap-1"
+                >
                   <BikeSVG />
                   {durations.biking}
                 </span>
-                <span>
+                <span
+                  class="{$commuteStore.maxtime.driving > durations.driving ? '.bg-red-500' : ''} .p-1 .rounded .flex .items-center .gap-1"
+                >
                   <CarSVG />
                   {durations.driving}
                 </span>
-                <span>
+                <span
+                  class="{$commuteStore.maxtime.transit > durations.transit ? '.bg-red-500' : ''} .p-1 .rounded .flex .items-center .gap-1"
+                >
                   <BusSVG />
                   {durations.transit}
                 </span>
-                <span>
+                <span
+                  class="{$commuteStore.maxtime.walking > durations.walking ? '.bg-red-500' : ''} .p-1 .rounded .flex .items-center .gap-1"
+                >
                   <WalkSVG />
                   {durations.walking}
                 </span>
