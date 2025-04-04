@@ -55,7 +55,8 @@ const createCommuteStore = () => {
     update(state => ({ ...state, addresses }))
 
   // TODO: make this dynamic
-  const setMaxtime = (maxtime: Maxtime) => update(state => ({ ...state, maxtime }))
+  const setMaxtime = (maxtime: Maxtime) =>
+    update(state => ({ ...state, maxtime }))
   const setMaxtimeDriving = (driving: number | null) =>
     update(state => ({ ...state, maxtime: { ...state.maxtime, driving } }))
   const setMaxtimeTransit = (transit: number | null) =>
@@ -64,7 +65,6 @@ const createCommuteStore = () => {
     update(state => ({ ...state, maxtime: { ...state.maxtime, biking } }))
   const setMaxtimeWalking = (walking: number | null) =>
     update(state => ({ ...state, maxtime: { ...state.maxtime, walking } }))
-
 
   return {
     subscribe,

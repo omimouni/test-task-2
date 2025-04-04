@@ -14,7 +14,6 @@
   let editValue = ''
   let maxtime = $commuteStore.maxtime
 
-
   onMount(() => {
     const savedAddresses = localStorage.getItem(STORAGE_KEY)
     if (savedAddresses) {
@@ -80,7 +79,6 @@
     }
   }
 
-
   const saveMaxtimeToLocalStorage = (maxtime: Maxtime) => {
     localStorage.setItem(STORAGE_KEY_MAXTIME, JSON.stringify(maxtime))
   }
@@ -103,7 +101,7 @@
 
 {#if $commuteStore.isOpen}
   <div
-    class=".fixed uprent uprent-reset .inset-0 .z-[9999] .flex .h-screen .w-screen .items-center .justify-center .bg-black/50 .backdrop-blur-sm"
+    class="uprent uprent-reset .fixed .inset-0 .z-[9999] .flex .h-screen .w-screen .items-center .justify-center .bg-black/50 .backdrop-blur-sm"
   >
     <button
       class=".absolute .h-screen .w-screen .bg-transparent"
@@ -180,17 +178,21 @@
           {:else if activeTab === 'maxtime'}
             <div class=".flex .flex-col .gap-4">
               {#each Object.entries($commuteStore.maxtime) as [mode, value]}
-                <div class=".flex .items-center .gap-4 .p-3 .border .border-gray-100 .rounded">
-                  <span class=".w-24 .text-gray-700">{mode[0].toUpperCase() + mode.slice(1)}</span>
+                <div
+                  class=".flex .items-center .gap-4 .rounded .border .border-gray-100 .p-3"
+                >
+                  <span class=".w-24 .text-gray-700"
+                    >{mode[0].toUpperCase() + mode.slice(1)}</span
+                  >
                   <input
-                    class=".flex-1 .px-3 .py-2 .border .border-gray-300 .rounded .focus:outline-none .focus:ring-2 .focus:ring-primary .focus:border-transparent"
+                    class=".focus:outline-none .focus:ring-2 .focus:ring-primary .focus:border-transparent .flex-1 .rounded .border .border-gray-300 .px-3 .py-2"
                     type="number"
                     bind:value={maxtime[mode]}
                     on:input={() => saveMaxtime()}
                   />
                   {#if value}
                     <Button
-                      class=".p-2 .text-gray-500 .hover:text-gray-700 .transition-colors"
+                      class=".hover:text-gray-700 .p-2 .text-gray-500 .transition-colors"
                       onClick={() => resetMaxtime(mode)}
                     >
                       X

@@ -2,7 +2,14 @@
   import type { Durations } from '~core/database'
   import { Button } from '~ui/components'
   import { commuteStore } from '~ui/stores'
-  import { BikeSVG, CarSVG, WalkSVG, BusSVG, RouteSVG, SettingsSVG } from '~ui/assets'
+  import {
+    BikeSVG,
+    CarSVG,
+    WalkSVG,
+    BusSVG,
+    RouteSVG,
+    SettingsSVG,
+  } from '~ui/assets'
 
   export let onLoad: () => Promise<{
     data:
@@ -55,16 +62,16 @@
       </p>
     {/if}
   {:else}
-    <div class=".flex .flex-col .gap-2 .w-fit">
+    <div class=".flex .w-fit .flex-col .gap-2">
       <div class=".rounded .bg-primary .p-2 .px-4 .text-white">
         <div class=".flex .flex-col .gap-2 .text-xs">
           {#each $commuteStore.addresses as address}
             <div class="">
-              <span class=".text-xs .opacity-50 .text-ellipsis">
+              <span class=".text-ellipsis .text-xs .opacity-50">
                 {address}
               </span>
 
-              <div class=".flex .mt-1 .items-center .gap-5">
+              <div class=".mt-1 .flex .items-center .gap-5">
                 <span>
                   <BikeSVG />
                   {durations.biking}
