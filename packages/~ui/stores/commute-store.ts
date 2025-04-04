@@ -18,7 +18,7 @@ const DOMAIN = env.VITE_API_DOMAIN
 export type Maxtime = {
   driving: number | null
   transit: number | null
-  biking: null | null
+  biking: number | null
   walking: number | null
 }
 
