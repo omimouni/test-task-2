@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Feed } from '$lib/pages'
-
 </script>
 
 <svelte:head>

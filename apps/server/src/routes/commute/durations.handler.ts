@@ -29,8 +29,7 @@ export const commuteDurationsEndpointHandler = app.post(
     }
 
     // Create an array of durations for each address
-    const durationsArray = body.addresses.map((address) => (
-    {
+    const durationsArray = body.addresses.map(address => ({
       address,
       durations: {
         walking: randomInt(45, 90),

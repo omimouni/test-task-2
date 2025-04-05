@@ -1,8 +1,15 @@
 import { writable } from 'svelte/store'
 import type { CommuteStore, CommuteStoreActions, Maxtime } from './types'
 import { initialState } from './constants'
-import { saveAddressesToLocalStorage, saveMaxtimeToLocalStorage } from './storage'
-import { createUIActions, createAddressActions, createTimeActions } from './actions'
+import {
+  saveAddressesToLocalStorage,
+  saveMaxtimeToLocalStorage,
+} from './storage'
+import {
+  createUIActions,
+  createAddressActions,
+  createTimeActions,
+} from './actions'
 import { detectEnvironment, loadStoredData } from './utils'
 
 /**
@@ -12,7 +19,7 @@ import { detectEnvironment, loadStoredData } from './utils'
  */
 const createCommuteStore = () => {
   const store = writable<CommuteStore>(initialState)
-  
+
   // Create action groups
   const uiActions = createUIActions(store)
   const addressActions = createAddressActions(store)
@@ -23,7 +30,7 @@ const createCommuteStore = () => {
    */
   const init = async () => {
     store.update(state => ({ ...state, isLoading: true }))
-    
+
     const isExtension = detectEnvironment(store)
     const { addresses, maxtime } = await loadStoredData(isExtension)
 
@@ -31,7 +38,7 @@ const createCommuteStore = () => {
       ...state,
       addresses,
       maxtime,
-      isLoading: false
+      isLoading: false,
     }))
   }
 
@@ -41,17 +48,17 @@ const createCommuteStore = () => {
     ...addressActions,
     ...timeActions,
     init,
-    saveAddressesToLocalStorage: (addresses: string[]) => 
+    saveAddressesToLocalStorage: (addresses: string[]) =>
       saveAddressesToLocalStorage(addresses, store),
-    saveMaxtimeToLocalStorage: (maxtime: Maxtime) => 
+    saveMaxtimeToLocalStorage: (maxtime: Maxtime) =>
       saveMaxtimeToLocalStorage(maxtime, store),
   }
 
   return {
     subscribe: store.subscribe,
-    ...actions
+    ...actions,
   }
 }
 
 // Create and export singleton instance
-export default createCommuteStore() 
+export default createCommuteStore()

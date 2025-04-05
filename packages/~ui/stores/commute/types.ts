@@ -58,9 +58,9 @@ export type StorageActions = {
 /**
  * Complete store actions type
  */
-export type CommuteStoreActions = UIActions & 
-  AddressActions & 
-  TimeActions & 
+export type CommuteStoreActions = UIActions &
+  AddressActions &
+  TimeActions &
   StorageActions & {
     init: () => Promise<void>
-  } 
+  }

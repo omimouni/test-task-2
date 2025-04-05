@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import { Button, Input } from '~ui/components'
   import { commuteStore, type Maxtime } from '~ui/stores'
-  import { 
+  import {
     XSVG,
     MapPinSVG,
     PencilSVG,
@@ -119,12 +119,16 @@
       aria-label="Close"
     >
     </button>
-    <div class=".z-[10] .w-[500px] .rounded-lg .bg-white .p-6 .shadow-xl .duration-300">
+    <div
+      class=".z-[10] .w-[500px] .rounded-lg .bg-white .p-6 .shadow-xl .duration-300"
+    >
       <div>
         <div class=".mb-6 .flex .items-center .justify-between">
-          <h1 class=".text-xl .font-semibold .text-gray-800">Commute Settings</h1>
-          <Button 
-            class=".rounded-full .p-2 .hover:bg-gray-100" 
+          <h1 class=".text-xl .font-semibold .text-gray-800">
+            Commute Settings
+          </h1>
+          <Button
+            class=".hover:bg-gray-100 .rounded-full .p-2"
             onClick={() => commuteStore.toggleOpen()}
           >
             <XSVG class=".h-5 .w-5" />
@@ -132,7 +136,7 @@
         </div>
 
         <div class=".mb-6">
-          <TabSelector {activeTab} onTabChange={(tab) => activeTab = tab} />
+          <TabSelector {activeTab} onTabChange={tab => (activeTab = tab)} />
         </div>
 
         <div class=".mt-4">
@@ -153,16 +157,18 @@
               {#if $commuteStore.addresses.length < MAX_ADDRESSES}
                 <div class=".mt-6 .space-y-4">
                   <div class=".relative">
-                    <div class=".absolute .left-3 .top-1/2 .-translate-y-1/2 .text-gray-400">
+                    <div
+                      class=".absolute .left-3 .top-1/2 .-translate-y-1/2 .text-gray-400"
+                    >
                       <MapPinSVG />
                     </div>
-                    <Input 
+                    <Input
                       placeholder="Enter new address"
                       bind:value={newAddress}
                     />
                   </div>
-                  <Button 
-                    class=".w-full .bg-primary .text-white .py-3 .rounded-md .hover:bg-primary-dark .transition-colors .flex .items-center .justify-center .gap-2"
+                  <Button
+                    class=".hover:bg-primary-dark .flex .w-full .items-center .justify-center .gap-2 .rounded-md .bg-primary .py-3 .text-white .transition-colors"
                     onClick={addAddress}
                   >
                     <MapPinSVG />
@@ -170,7 +176,9 @@
                   </Button>
                 </div>
               {:else}
-                <div class=".mt-4 .flex .items-center .justify-center .gap-2 .text-gray-500 .text-sm .bg-gray-50 .rounded-lg .p-4">
+                <div
+                  class=".mt-4 .flex .items-center .justify-center .gap-2 .rounded-lg .bg-gray-50 .p-4 .text-sm .text-gray-500"
+                >
                   <XSVG class=".h-5 .w-5" />
                   <p>Maximum of {MAX_ADDRESSES} addresses reached</p>
                 </div>

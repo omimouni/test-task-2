@@ -5,12 +5,12 @@ import type { Writable } from 'svelte/store'
 
 const THIRTY_DAYS_MS = 1000 * 60 * 60 * 24 * 30
 
-const getExpirationDate = () => 
+const getExpirationDate = () =>
   new Date(Date.now() + THIRTY_DAYS_MS).toUTCString()
 
 export const saveAddressesToLocalStorage = async (
   addresses: string[],
-  commuteStore: Writable<CommuteStore>
+  commuteStore: Writable<CommuteStore>,
 ): Promise<void> => {
   try {
     const isExtension = get(commuteStore).isExtension
@@ -24,7 +24,7 @@ export const saveAddressesToLocalStorage = async (
         url: URL,
         domain: DOMAIN,
         path: '/',
-        expirationDate: Date.now() + THIRTY_DAYS_MS
+        expirationDate: Date.now() + THIRTY_DAYS_MS,
       })
     } else {
       document.cookie = `${STORAGE_KEY}=${serializedAddresses}; path=/; domain=localhost; expires=${getExpirationDate()}`
@@ -37,7 +37,7 @@ export const saveAddressesToLocalStorage = async (
 
 export const saveMaxtimeToLocalStorage = async (
   maxtime: Maxtime,
-  commuteStore: Writable<CommuteStore>
+  commuteStore: Writable<CommuteStore>,
 ) => {
   const isExtension = get(commuteStore).isExtension
   if (isExtension) {
@@ -48,13 +48,13 @@ export const saveMaxtimeToLocalStorage = async (
       url: URL,
       domain: DOMAIN,
       path: '/',
-      expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime()
+      expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime(),
     })
   } else {
     document.cookie = `${STORAGE_KEY_MAXTIME}=${JSON.stringify(
-      maxtime
+      maxtime,
     )}; path=/; domain=localhost; expires=${new Date(
-      Date.now() + 1000 * 60 * 60 * 24 * 30
+      Date.now() + 1000 * 60 * 60 * 24 * 30,
     ).toUTCString()}`
   }
-} 
+}

@@ -55,9 +55,7 @@
       // Simulate API call - replace with real API in production
       await new Promise(resolve => setTimeout(resolve, 1000))
       suggestions = mockAddresses
-        .filter(address =>
-          address.toLowerCase().includes(query.toLowerCase()),
-        )
+        .filter(address => address.toLowerCase().includes(query.toLowerCase()))
         .slice(0, 5)
       isOpen = true
     } catch (error) {
@@ -79,7 +77,7 @@
   const handleInputChange = (event: Event) => {
     const inputValue = (event.target as HTMLInputElement).value
     clearTimeout(debounceTimeout)
-    
+
     // Throttle and debounce combination
     debounceTimeout = setTimeout(() => {
       throttle(() => getSuggestions(inputValue), 500)
@@ -104,8 +102,8 @@
 </script>
 
 <svelte:window on:click={handleClickOutside} />
-<div 
-  bind:this={containerRef} 
+<div
+  bind:this={containerRef}
   class=".relative .w-full"
   aria-expanded={isOpen}
   aria-haspopup="listbox"
@@ -115,7 +113,7 @@
     bind:value
     on:input={handleInputChange}
     on:focus={handleFocus}
-    class=".w-full .px-4 .py-2 .border .border-gray-300 .rounded-lg .shadow-sm .focus:outline-none .focus:ring-2 .focus:ring-blue-500 .focus:border-blue-500"
+    class=".focus:outline-none .focus:ring-2 .focus:ring-blue-500 .focus:border-blue-500 .w-full .rounded-lg .border .border-gray-300 .px-4 .py-2 .shadow-sm"
     {placeholder}
     aria-autocomplete="list"
     aria-controls="suggestions-list"
@@ -124,7 +122,7 @@
   {#if isOpen && value.length >= minChars}
     <div
       id="suggestions-list"
-      class=".absolute .z-50 .w-full .mt-1 .bg-white .border .border-gray-200 .rounded-lg .shadow-lg"
+      class=".absolute .z-50 .mt-1 .w-full .rounded-lg .border .border-gray-200 .bg-white .shadow-lg"
       role="listbox"
     >
       {#if isLoading}
@@ -135,14 +133,14 @@
           Loading...
         </div>
       {:else if suggestions.length === 0}
-        <div class=".p-4 .text-sm .text-center .text-gray-500">
+        <div class=".p-4 .text-center .text-sm .text-gray-500">
           No suggestions found
         </div>
       {:else}
-        <div class=".overflow-y-auto .max-h-60">
+        <div class=".max-h-60 .overflow-y-auto">
           {#each suggestions as suggestion, i}
             <button
-              class=".w-full .px-4 hover:.bg-black/10 .py-2 .text-sm .text-left .text-gray-700 .transition-colors .duration-150 .hover:bg-gray-100"
+              class=".hover:bg-gray-100 .w-full .px-4 .py-2 .text-left .text-sm .text-gray-700 .transition-colors .duration-150 hover:.bg-black/10"
               on:click={() => handleSuggestionClick(suggestion)}
               role="option"
               aria-selected={value === suggestion}
