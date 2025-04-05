@@ -163,7 +163,6 @@
               {/if}
             </div>
           {:else if activeTab === 'maxtime'}
-
             <div class=".flex .flex-col .gap-4">
               {#each Object.entries($commuteStore.maxtime) as [mode, value]}
                 <div
@@ -183,7 +182,7 @@
                       class=".hover:text-gray-700 .p-2 .text-gray-500 .transition-colors"
                       onClick={() => resetMaxtime(mode)}
                     >
-                      <XSVG class=".w-4 .h-4" />
+                      <XSVG class=".h-4 .w-4" />
                     </Button>
                   {/if}
                 </div>

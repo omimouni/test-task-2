@@ -7,7 +7,6 @@ import { get } from 'svelte/store'
 const STORAGE_KEY = 'commuteAddresses'
 const STORAGE_KEY_MAXTIME = 'commuteMaxtime'
 
-
 const env = import.meta.env
 const URL = env.VITE_API_URL
 const DOMAIN = env.VITE_API_DOMAIN
@@ -57,8 +56,10 @@ const createCommuteStore = () => {
 
   // UI state management
   const setOpen = (isOpen: boolean) => update(state => ({ ...state, isOpen }))
-  const toggleOpen = () => update(state => ({ ...state, isOpen: !state.isOpen }))
-  const setLoading = (isLoading: boolean) => update(state => ({ ...state, isLoading }))
+  const toggleOpen = () =>
+    update(state => ({ ...state, isOpen: !state.isOpen }))
+  const setLoading = (isLoading: boolean) =>
+    update(state => ({ ...state, isLoading }))
 
   // Address management functions
   const addAddress = (address: string) => {
@@ -86,7 +87,7 @@ const createCommuteStore = () => {
 
   // Local storage persistence
   const saveAddressesToLocalStorage = async (addresses: string[]) => {
-    const isExtension = get(commuteStore).isExtension;
+    const isExtension = get(commuteStore).isExtension
     if (isExtension) {
       await chrome.runtime.sendMessage({
         type: 'SET_COOKIE',
@@ -95,7 +96,9 @@ const createCommuteStore = () => {
         url: URL,
         domain: DOMAIN,
         path: '/',
-        expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime()
+        expirationDate: new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 30,
+        ).getTime(),
       })
     } else {
       document.cookie = `${STORAGE_KEY}=${JSON.stringify(addresses)}; path=/; domain=localhost; expires=${new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toUTCString()}`
@@ -103,7 +106,7 @@ const createCommuteStore = () => {
   }
 
   const saveMaxtimeToLocalStorage = async (maxtime: Maxtime) => {
-    const isExtension = get(commuteStore).isExtension;
+    const isExtension = get(commuteStore).isExtension
     if (isExtension) {
       await chrome.runtime.sendMessage({
         type: 'SET_COOKIE',
@@ -112,7 +115,9 @@ const createCommuteStore = () => {
         url: URL,
         domain: DOMAIN,
         path: '/',
-        expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).getTime()
+        expirationDate: new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 30,
+        ).getTime(),
       })
     } else {
       document.cookie = `${STORAGE_KEY_MAXTIME}=${JSON.stringify(maxtime)}; path=/; domain=localhost; expires=${new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toUTCString()}`
@@ -127,7 +132,12 @@ const createCommuteStore = () => {
     update(state => ({ ...state, isLoading: true }))
 
     // Check if the code is running in an extension
-    if (chrome && typeof chrome !== 'undefined' && typeof chrome.runtime !== 'undefined' && typeof chrome.runtime.id !== 'undefined') {
+    if (
+      chrome &&
+      typeof chrome !== 'undefined' &&
+      typeof chrome.runtime !== 'undefined' &&
+      typeof chrome.runtime.id !== 'undefined'
+    ) {
       const isExtension = chrome.runtime.id !== undefined
       if (isExtension) {
         update(state => ({ ...state, isExtension }))
@@ -142,43 +152,49 @@ const createCommuteStore = () => {
       walking: null,
     }
 
-    const isExtension = get(commuteStore).isExtension;
+    const isExtension = get(commuteStore).isExtension
 
     if (isExtension) {
       // Get addresses from extension cookie
       const addressesCookie = await chrome.runtime.sendMessage({
         type: 'GET_COOKIE',
         name: STORAGE_KEY,
-        url: 'http://localhost:5000'
-      });
-      addresses = addressesCookie?.data ? JSON.parse(addressesCookie.data) : [];
+        url: 'http://localhost:5000',
+      })
+      addresses = addressesCookie?.data ? JSON.parse(addressesCookie.data) : []
 
       // Get maxtime from extension cookie
       const maxtimeCookie = await chrome.runtime.sendMessage({
         type: 'GET_COOKIE',
         name: STORAGE_KEY_MAXTIME,
-        url: 'http://localhost:5000'
-      });
-      const maxtimeCookieObject = maxtimeCookie?.data ? JSON.parse(maxtimeCookie.data) : null;
+        url: 'http://localhost:5000',
+      })
+      const maxtimeCookieObject = maxtimeCookie?.data
+        ? JSON.parse(maxtimeCookie.data)
+        : null
       if (maxtimeCookieObject) {
-        maxtime = maxtimeCookieObject;
+        maxtime = maxtimeCookieObject
       }
     } else {
       // Get addresses from browser cookie
       const addressesCookie = document.cookie
         .split('; ')
         .find(row => row.startsWith(STORAGE_KEY))
-        ?.split('=')[1];
-      addresses = addressesCookie ? JSON.parse(decodeURIComponent(addressesCookie)) : [];
+        ?.split('=')[1]
+      addresses = addressesCookie
+        ? JSON.parse(decodeURIComponent(addressesCookie))
+        : []
 
-      // Get maxtime from browser cookie  
+      // Get maxtime from browser cookie
       const maxtimeCookie = document.cookie
         .split('; ')
         .find(row => row.startsWith(STORAGE_KEY_MAXTIME))
-        ?.split('=')[1];
-      const maxtimeCookieObject = maxtimeCookie ? JSON.parse(decodeURIComponent(maxtimeCookie)) : null;
+        ?.split('=')[1]
+      const maxtimeCookieObject = maxtimeCookie
+        ? JSON.parse(decodeURIComponent(maxtimeCookie))
+        : null
       if (maxtimeCookieObject) {
-        maxtime = maxtimeCookieObject;
+        maxtime = maxtimeCookieObject
       }
     }
 
@@ -187,8 +203,8 @@ const createCommuteStore = () => {
       ...state,
       addresses,
       maxtime,
-      isLoading: false
-    }));
+      isLoading: false,
+    }))
   }
 
   // Return public store interface

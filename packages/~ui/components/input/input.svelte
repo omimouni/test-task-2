@@ -56,8 +56,6 @@
       getSuggestions(inputValue)
     }, 300)
   }
-
-
 </script>
 
 <svelte:window on:click={handleClickOutside} />
