@@ -1,6 +1,6 @@
 import type { Writable } from 'svelte/store'
 import type { CommuteStore, Maxtime } from './types'
-import { STORAGE_KEY, STORAGE_KEY_MAXTIME } from './constants'
+import { STORAGE_KEY, STORAGE_KEY_MAXTIME, URL } from './constants'
 import { initialState } from './constants'
 
 /**
@@ -31,16 +31,18 @@ export const loadStoredData = async (isExtension: boolean) => {
  * Loads data from Chrome extension storage
  */
 const loadExtensionData = async () => {
+
+
   const [addressesCookie, maxtimeCookie] = await Promise.all([
     chrome.runtime.sendMessage({
       type: 'GET_COOKIE',
       name: STORAGE_KEY,
-      url: 'http://localhost:5000',
+      url: URL,
     }),
     chrome.runtime.sendMessage({
       type: 'GET_COOKIE',
       name: STORAGE_KEY_MAXTIME,
-      url: 'http://localhost:5000',
+      url: URL,
     }),
   ])
 

@@ -27,7 +27,7 @@ export const saveAddressesToLocalStorage = async (
         expirationDate: Date.now() + THIRTY_DAYS_MS,
       })
     } else {
-      document.cookie = `${STORAGE_KEY}=${serializedAddresses}; path=/; domain=localhost; expires=${getExpirationDate()}`
+      document.cookie = `${STORAGE_KEY}=${serializedAddresses}; path=/; domain=${DOMAIN}; expires=${getExpirationDate()}`
     }
   } catch (error) {
     console.error('Failed to save addresses:', error)
@@ -53,7 +53,7 @@ export const saveMaxtimeToLocalStorage = async (
   } else {
     document.cookie = `${STORAGE_KEY_MAXTIME}=${JSON.stringify(
       maxtime,
-    )}; path=/; domain=localhost; expires=${new Date(
+    )}; path=/; domain=${DOMAIN}; expires=${new Date(
       Date.now() + 1000 * 60 * 60 * 24 * 30,
     ).toUTCString()}`
   }
