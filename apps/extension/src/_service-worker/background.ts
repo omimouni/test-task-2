@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener(
           })
           sendResponse({ data, error })
         } catch (error) {
-          sendResponse({ data: null, error: error.message })
+          sendResponse({ data: null, error: error instanceof Error ? error.message : 'Unknown error' })
         }
       })()
       return true // Keep the message channel open for the async response
