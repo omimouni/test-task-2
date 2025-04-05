@@ -1,1 +1,1 @@
-export { default as commuteStore, type Maxtime } from './commute-store'
+export { commuteStore } from './commute'
