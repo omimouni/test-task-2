@@ -2,7 +2,13 @@
   import { onMount } from 'svelte'
   import { Button, Input } from '~ui/components'
   import { commuteStore, type Maxtime } from '~ui/stores'
-  import { XSVG } from '~ui/assets'
+  import { 
+    XSVG,
+    MapPinSVG,
+    PencilSVG,
+    TrashSVG,
+    CheckSVG,
+  } from '~ui/assets'
 
   const MAX_ADDRESSES = 2
 
@@ -55,6 +61,7 @@
     // $commuteStore.addresses = addresses
     commuteStore.setAddresses(addresses)
     editingAddress = null
+    editValue = ''
     saveToLocalStorage(addresses)
   }
 
@@ -88,7 +95,7 @@
 
 {#if $commuteStore.isOpen}
   <div
-    class="uprent uprent-reset .fixed .inset-0 .z-[9999] .flex .h-screen .w-screen .items-center .justify-center .bg-black/50 .backdrop-blur-sm"
+    class="uprent uprent-reset .fixed .inset-0 .z-[9999] .flex .h-screen .w-screen .items-center .justify-center .bg-black/60 .backdrop-blur-sm"
   >
     <button
       class=".absolute .h-screen .w-screen .bg-transparent"
@@ -96,18 +103,23 @@
       aria-label="Close"
     >
     </button>
-    <div class=".z-[10] .w-[500px] .bg-white .p-4 .duration-300">
+    <div class=".z-[10] .w-[500px] .rounded-lg .bg-white .p-6 .shadow-xl .duration-300">
       <div>
-        <div class=".flex .items-center .justify-between">
-          <h1>Commute Modal</h1>
-          <Button onClick={() => commuteStore.toggleOpen()}>X</Button>
+        <div class=".mb-6 .flex .items-center .justify-between">
+          <h1 class=".text-xl .font-semibold .text-gray-800">Commute Settings</h1>
+          <Button 
+            class=".rounded-full .p-2 .hover:bg-gray-100" 
+            onClick={() => commuteStore.toggleOpen()}
+          >
+            <XSVG class=".h-5 .w-5" />
+          </Button>
         </div>
 
-        <div>
-          <ul class=".flex .items-center .gap-4">
+        <div class=".mb-6">
+          <ul class=".flex .items-center .gap-6 .border-b .border-gray-200">
             <li>
               <button
-                class=".border-b-2 .border-transparent .p-2 .text-gray-500 {activeTab ===
+                class=".border-b-2 .border-transparent .px-4 .py-3 .text-gray-600 .font-medium {activeTab ===
                 'addresses'
                   ? '!.border-primary .text-primary'
                   : ''}"
@@ -116,7 +128,7 @@
             </li>
             <li>
               <button
-                class=".border-b-2 .border-transparent .p-2 .text-gray-500 {activeTab ===
+                class=".border-b-2 .border-transparent .px-4 .py-3 .text-gray-600 .font-medium {activeTab ===
                 'maxtime'
                   ? '!.border-primary .text-primary'
                   : ''}"
@@ -128,62 +140,110 @@
 
         <div class=".mt-4">
           {#if activeTab === 'addresses'}
-            <div>
+            <div class=".space-y-3">
               {#each $commuteStore.addresses as address}
                 <div
-                  class=".flex .items-center .justify-between .border-b .border-gray-100 .p-3"
+                  class=".group .flex .items-center .justify-between .rounded-lg .border .border-gray-200 .p-4 .hover:bg-gray-50 .transition-colors"
                 >
                   {#if editingAddress === address}
-                    <div class=".flex .flex-1 .items-center .gap-2">
-                      <Input bind:value={editValue} />
-                      <Button onClick={saveEdit}>Save</Button>
-                      <Button onClick={cancelEdit}>Cancel</Button>
+                    <div class=".flex .flex-1 .items-center .gap-3">
+                      <div class=".relative .flex-1">
+                        <div class=".absolute .left-3 .top-1/2 .-translate-y-1/2 .text-gray-400">
+                          <MapPinSVG />
+                        </div>
+                        <Input 
+                          bind:value={editValue}
+                          placeholder="Enter address"
+                        />
+                      </div>
+                      <Button 
+                        class=".bg-primary .text-white .p-2 .rounded-full .hover:bg-primary-dark .transition-colors"
+                        title="Save"
+                        onClick={saveEdit}
+                      >
+                        <CheckSVG />
+                      </Button>
+                      <Button 
+                        class=".text-gray-600 .p-2 .rounded-full .hover:bg-gray-100 .transition-colors"
+                        title="Cancel"
+                        onClick={cancelEdit}
+                      >
+                        <XSVG class=".h-5 .w-5" />
+                      </Button>
                     </div>
                   {:else}
-                    <div class=".text-gray-700">{address}</div>
-                    <div class=".flex .gap-2">
-                      <Button onClick={() => handleEdit(address)}>Edit</Button>
-                      <Button onClick={() => handleDelete(address)}
-                        >Delete</Button
+                    <div class=".flex .items-center .gap-3">
+                      <div class=".text-gray-400">
+                        <MapPinSVG />
+                      </div>
+                      <span class=".text-gray-700 .font-medium">{address}</span>
+                    </div>
+                    <div class=".flex .gap-2 .opacity-0 .group-hover:opacity-100 .transition-opacity">
+                      <Button 
+                        class=".p-2 .rounded-full .text-gray-600 .hover:bg-gray-100 .transition-colors"
+                        title="Edit address"
+                        onClick={() => handleEdit(address)}
                       >
+                        <PencilSVG />
+                      </Button>
+                      <Button 
+                        class=".p-2 .rounded-full .text-red-600 .hover:bg-red-50 .transition-colors"
+                        title="Delete address"
+                        onClick={() => handleDelete(address)}
+                      >
+                        <TrashSVG />
+                      </Button>
                     </div>
                   {/if}
                 </div>
               {/each}
 
               {#if $commuteStore.addresses.length < MAX_ADDRESSES}
-                <div class=".mt-4 .flex .flex-col .gap-4">
-                  <Input bind:value={newAddress} />
-                  <Button onClick={addAddress}>Add Address</Button>
+                <div class=".mt-6 .space-y-4">
+                  <div class=".relative">
+                    <div class=".absolute .left-3 .top-1/2 .-translate-y-1/2 .text-gray-400">
+                      <MapPinSVG />
+                    </div>
+                    <Input 
+                      placeholder="Enter new address"
+                      bind:value={newAddress}
+                    />
+                  </div>
+                  <Button 
+                    class=".w-full .bg-primary .text-white .py-3 .rounded-md .hover:bg-primary-dark .transition-colors .flex .items-center .justify-center .gap-2"
+                    onClick={addAddress}
+                  >
+                    <MapPinSVG />
+                    <span>Add Address</span>
+                  </Button>
                 </div>
               {:else}
-                <p class=".mt-4 .text-gray-500">
-                  Maximum of {MAX_ADDRESSES} addresses reached
-                </p>
+                <div class=".mt-4 .flex .items-center .justify-center .gap-2 .text-gray-500 .text-sm .bg-gray-50 .rounded-lg .p-4">
+                  <XSVG class=".h-5 .w-5" />
+                  <p>Maximum of {MAX_ADDRESSES} addresses reached</p>
+                </div>
               {/if}
             </div>
           {:else if activeTab === 'maxtime'}
-
-            <div class=".flex .flex-col .gap-4">
+            <div class=".space-y-4">
               {#each Object.entries($commuteStore.maxtime) as [mode, value]}
                 <div
-                  class=".flex .items-center .gap-4 .rounded .border .border-gray-100 .p-3"
+                  class=".flex .items-center .gap-4 .rounded-lg .border .border-gray-200 .p-4 .hover:bg-gray-50"
                 >
-                  <span class=".w-24 .text-gray-700"
+                  <span class=".w-24 .text-gray-700 .font-medium"
                     >{mode[0].toUpperCase() + mode.slice(1)}</span
                   >
-                  <input
-                    class=".focus:outline-none .focus:ring-2 .focus:ring-primary .focus:border-transparent .flex-1 .rounded .border .border-gray-300 .px-3 .py-2"
-                    type="number"
+                  <Input
+                    placeholder="Enter time in minutes"
                     bind:value={maxtime[mode]}
                     on:input={() => saveMaxtime()}
                   />
                   {#if value}
                     <Button
-                      class=".hover:text-gray-700 .p-2 .text-gray-500 .transition-colors"
+                      class=".text-gray-400 .hover:text-gray-600 .p-2 .rounded-full .hover:bg-gray-100"
                       onClick={() => resetMaxtime(mode)}
                     >
-                      <XSVG class=".w-4 .h-4" />
+                      <XSVG class=".h-5 .w-5" />
                     </Button>
                   {/if}
                 </div>

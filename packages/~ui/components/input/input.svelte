@@ -6,7 +6,7 @@
     value: string
     placeholder?: string
     debounceMs?: number
-    minChars?: number
+    minChars: number
   }
 
   // Props with defaults
@@ -107,7 +107,6 @@
 <div 
   bind:this={containerRef} 
   class=".relative .w-full"
-  role="combobox"
   aria-expanded={isOpen}
   aria-haspopup="listbox"
 >
