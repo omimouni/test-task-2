@@ -24,7 +24,11 @@
   let newAddress = ''
   let editingAddress: string | null = null
   let editValue = ''
-  let maxtime = {
+
+  // Define valid modes as a type
+  type TransportMode = keyof Maxtime
+
+  let maxtime: Maxtime = {
     driving: null,
     transit: null,
     biking: null,
@@ -100,8 +104,8 @@
   }
 
   // Helper function to ensure type safety
-  const getTypedMode = (mode: string): keyof Maxtime => {
-    return mode as keyof Maxtime
+  const getTypedMode = (mode: string): TransportMode => {
+    return mode as TransportMode
   }
 </script>
 
@@ -177,7 +181,7 @@
               {#each Object.entries($commuteStore.maxtime) as [mode, value]}
                 <MaxTimeItem
                   mode={getTypedMode(mode)}
-                  bind:value={maxtime[mode]}
+                  bind:value={maxtime[getTypedMode(mode)]}
                   onChange={saveMaxtime}
                   onReset={() => resetMaxtime(mode)}
                 />

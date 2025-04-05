@@ -1,4 +1,4 @@
-import { CommuteStore } from "./types"
+import type { CommuteStore } from "./types"
 
 export const STORAGE_KEY = 'commuteAddresses'
 export const STORAGE_KEY_MAXTIME = 'commuteMaxtime'
