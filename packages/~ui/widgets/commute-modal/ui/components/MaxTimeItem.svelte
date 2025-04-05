@@ -1,6 +1,7 @@
 <script lang="ts">
   import { CarSVG, BusSVG, BikeSVG, WalkSVG, XSVG } from '~ui/assets'
   import { Button } from '~ui/components'
+  import type { Maxtime } from '~ui/stores'
 
   // Define the valid modes as a type
   type TransportMode = 'driving' | 'transit' | 'biking' | 'walking'
