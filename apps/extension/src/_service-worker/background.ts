@@ -1,12 +1,6 @@
 // Import API utilities
 import api from '~api'
 
-// Type definitions for message responses
-type MessageResponse = {
-  data: any
-  error: string | null
-}
-
 // Type definitions for cookie-related messages
 type CookieMessage = {
   type: 'GET_COOKIE' | 'SET_COOKIE'
