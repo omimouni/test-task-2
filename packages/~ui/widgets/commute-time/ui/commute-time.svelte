@@ -47,8 +47,10 @@
 </script>
 
 {#if $commuteStore.isLoading}
-  <span class=".bg-primary/50 .m-2 .rounded-full .h-fit .w-fit ">
-    <span class=".border-2 .border-transparent .border-t-primary .rounded-full .w-4 .block .aspect-square .animate-spin"></span>
+  <span class=".m-2 .h-fit .w-fit .rounded-full .bg-primary/50">
+    <span
+      class=".block .aspect-square .w-4 .animate-spin .rounded-full .border-2 .border-transparent .border-t-primary"
+    ></span>
   </span>
 {:else}
   <div class=".p-2">
