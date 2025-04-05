@@ -6,8 +6,9 @@
   type TransportMode = 'driving' | 'transit' | 'biking' | 'walking'
 
   // Props with type annotations
-  export let mode: TransportMode
+  export let mode: keyof Maxtime
   export let value: number | null
+  export let onChange: () => void
   export let onReset: () => void
 
   const getIcon = (mode: TransportMode) => {
@@ -20,7 +21,7 @@
     }
   }
 
-  $: Icon = getIcon(mode)
+  $: Icon = getIcon(mode as TransportMode)
 </script>
 
 <div class=".flex .items-center .gap-6 .rounded-lg .p-4">
@@ -40,6 +41,7 @@
         min="1"
         placeholder="0"
         bind:value
+        on:input={onChange}
         class=".w-full .px-4 .py-2.5 .text-right .text-gray-900 .placeholder-gray-400 .focus:outline-none .appearance-none .bg-transparent"
       />
       <div class=".flex .items-center .px-4 .border-l .border-inherit .text-gray-500">

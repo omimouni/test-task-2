@@ -178,6 +178,7 @@
                 <MaxTimeItem
                   mode={getTypedMode(mode)}
                   bind:value={maxtime[mode]}
+                  onChange={saveMaxtime}
                   onReset={() => resetMaxtime(mode)}
                 />
               {/each}
