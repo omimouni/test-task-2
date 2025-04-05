@@ -13,6 +13,9 @@
     BikeSVG,
     WalkSVG,
   } from '~ui/assets'
+  import TabSelector from './components/TabSelector.svelte'
+  import AddressItem from './components/AddressItem.svelte'
+  import MaxTimeItem from './components/MaxTimeItem.svelte'
 
   const MAX_ADDRESSES = 2
 
@@ -95,6 +98,11 @@
     maxtime = newMaxtime
     saveMaxtimeToLocalStorage(maxtime)
   }
+
+  // Helper function to ensure type safety
+  const getTypedMode = (mode: string): keyof Maxtime => {
+    return mode as keyof Maxtime
+  }
 </script>
 
 {#if $commuteStore.isOpen}
@@ -120,87 +128,22 @@
         </div>
 
         <div class=".mb-6">
-          <ul class=".flex .items-center .gap-6 .border-b .border-gray-200">
-            <li>
-              <button
-                class=".border-b-2 .border-transparent .px-4 .py-3 .text-gray-600 .font-medium {activeTab ===
-                'addresses'
-                  ? '!.border-primary .text-primary'
-                  : ''}"
-                on:click={() => (activeTab = 'addresses')}>Addresses</button
-              >
-            </li>
-            <li>
-              <button
-                class=".border-b-2 .border-transparent .px-4 .py-3 .text-gray-600 .font-medium {activeTab ===
-                'maxtime'
-                  ? '!.border-primary .text-primary'
-                  : ''}"
-                on:click={() => (activeTab = 'maxtime')}>Max Time</button
-              >
-            </li>
-          </ul>
+          <TabSelector {activeTab} onTabChange={(tab) => activeTab = tab} />
         </div>
 
         <div class=".mt-4">
           {#if activeTab === 'addresses'}
             <div class=".space-y-3">
               {#each $commuteStore.addresses as address}
-                <div
-                  class=".group .flex .items-center .justify-between .rounded-lg .border .border-gray-200 .p-4 .hover:bg-gray-50 .transition-colors"
-                >
-                  {#if editingAddress === address}
-                    <div class=".flex .flex-1 .items-center .gap-3">
-                      <div class=".relative .flex-1">
-                        <div class=".absolute .left-3 .top-1/2 .-translate-y-1/2 .text-gray-400">
-                          <MapPinSVG />
-                        </div>
-                        <Input 
-                          bind:value={editValue}
-                          placeholder="Enter address"
-                        />
-                      </div>
-                      <Button 
-                        class=".bg-primary .text-white .p-2 .rounded-full .hover:bg-primary-dark .transition-colors"
-                        title="Save"
-                        onClick={saveEdit}
-                      >
-                        <CheckSVG />
-                      </Button>
-                      <Button 
-                        class=".text-gray-600 .p-2 .rounded-full .hover:bg-gray-100 .transition-colors"
-                        title="Cancel"
-                        onClick={cancelEdit}
-                      >
-                        <XSVG class=".h-5 .w-5" />
-                      </Button>
-                    </div>
-                  {:else}
-                    <div class=".flex .items-center .gap-3">
-                      <div class=".text-gray-400">
-                        <MapPinSVG />
-                      </div>
-                      <span class=".text-gray-700 .font-medium">{address}</span>
-                    </div>
-                    <div class=".flex .gap-2">
-                      <Button 
-                        class=".p-2 .rounded-full .text-gray-600 .hover:bg-gray-100 .transition-colors"
-                        title="Edit address"
-                        onClick={() => handleEdit(address)}
-                      >
-                        <PencilSVG />
-                      </Button>
-                      <Button 
-                        class=".p-2 .rounded-full .text-red-600 .hover:bg-red-50 .transition-colors"
-                        title="Delete address"
-                        subtle
-                        onClick={() => handleDelete(address)}
-                      >
-                        <TrashSVG />
-                      </Button>
-                    </div>
-                  {/if}
-                </div>
+                <AddressItem
+                  {address}
+                  isEditing={editingAddress === address}
+                  {editValue}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onSave={saveEdit}
+                  onCancelEdit={cancelEdit}
+                />
               {/each}
 
               {#if $commuteStore.addresses.length < MAX_ADDRESSES}
@@ -230,84 +173,15 @@
               {/if}
             </div>
           {:else if activeTab === 'maxtime'}
-          <div class=".space-y-4">
-            {#each Object.entries($commuteStore.maxtime) as [mode, value]}
-              <div
-                class=".flex .items-center .gap-6 .rounded-lg .p-4"
-              >
-                <div class=".w-32 .flex .items-center .gap-3">
-                  <div class=".text-gray-600">
-                    {#if mode === 'driving'}
-                      <CarSVG class=".h-5 .w-5" />
-                    {:else if mode === 'transit'}
-                      <BusSVG class=".h-5 .w-5" />
-                    {:else if mode === 'biking'}
-                      <BikeSVG class=".h-5 .w-5" />
-                    {:else if mode === 'walking'}
-                      <WalkSVG class=".h-5 .w-5" />
-                    {/if}
-                  </div>
-                  <span class=".text-base .text-gray-900 .capitalize">{mode}</span>
-                </div>
-
-                <div class=".relative .flex-1">
-                  <div 
-                    class=".relative .flex .w-full .items-stretch .rounded-lg .border 
-                      {maxtime[mode] !== null && maxtime[mode] <= 0 ? '.border-red-300' : '.border-gray-200'}"
-                  >
-                    <input
-                      type="number"
-                      min="1"
-                      placeholder="0"
-                      bind:value={maxtime[mode]}
-                      on:input={() => saveMaxtime()}
-                      class=".w-full 
-                        .px-4 
-                        .py-2.5
-                        .text-right 
-                        .text-gray-900
-                        .placeholder-gray-400
-                        .focus:outline-none
-                        .appearance-none
-                        .bg-transparent"
-                    />
-                    <div 
-                      class=".flex 
-                        .items-center 
-                        .px-4
-                        .border-l 
-                        .border-inherit
-                        .text-gray-500"
-                    >
-                      min
-                    </div>
-                  </div>
-                  {#if maxtime[mode] !== null && maxtime[mode] <= 0}
-                    <div class=".absolute .-bottom-6 .left-0 .flex .items-center .gap-1.5 .text-red-500">
-                      <XSVG class=".h-3.5 .w-3.5" />
-                      <span class=".text-sm">Please enter a positive number</span>
-                    </div>
-                  {/if}
-                </div>
-
-                <div class=".w-10 .flex .items-center .justify-center">
-                  {#if maxtime[mode] !== null}
-                    <Button
-                      class=".text-gray-400 
-                        .p-2 
-                        .rounded-full 
-                        .hover:bg-gray-100
-                        .transition-colors"
-                      onClick={() => resetMaxtime(mode)}
-                      title="Reset time limit"
-                    >
-                      <XSVG class=".h-4 .w-4" />
-                    </Button>
-                  {/if}
-                </div>
-              </div>
-            {/each}
-          </div>
+            <div class=".space-y-4">
+              {#each Object.entries($commuteStore.maxtime) as [mode, value]}
+                <MaxTimeItem
+                  mode={getTypedMode(mode)}
+                  bind:value={maxtime[mode]}
+                  onReset={() => resetMaxtime(mode)}
+                />
+              {/each}
+            </div>
           {/if}
         </div>
       </div>
