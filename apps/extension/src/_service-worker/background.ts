@@ -1,12 +1,6 @@
 // Import API utilities
 import api from '~api'
 
-// Type definitions for message responses
-type MessageResponse = {
-  data: any
-  error: string | null
-}
-
 // Type definitions for cookie-related messages
 type CookieMessage = {
   type: 'GET_COOKIE' | 'SET_COOKIE'
@@ -52,7 +46,10 @@ chrome.runtime.onMessage.addListener(
           })
           sendResponse({ data, error })
         } catch (error) {
-          sendResponse({ data: null, error: error.message })
+          sendResponse({
+            data: null,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          })
         }
       })()
       return true // Keep the message channel open for the async response

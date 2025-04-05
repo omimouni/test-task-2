@@ -1,7 +1,30 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
 
-  let mockAddresses = [
+  // Types
+  interface AddressInputProps {
+    value: string
+    placeholder?: string
+    debounceMs?: number
+    minChars: number
+  }
+
+  // Props with defaults
+  export let value: AddressInputProps['value'] = ''
+  export let placeholder: AddressInputProps['placeholder'] = 'Enter address...'
+  export let debounceMs: AddressInputProps['debounceMs'] = 300
+  export let minChars: AddressInputProps['minChars'] = 3
+
+  // State
+  let suggestions: string[] = []
+  let isLoading = false
+  let isOpen = false
+  let containerRef: HTMLDivElement | null = null
+  let debounceTimeout: NodeJS.Timeout
+  let lastThrottleTime = 0
+
+  // Mock data - should be moved to a separate file in real application
+  const mockAddresses = [
     '123 Main St, Anytown, USA',
     '456 Maple Ave, Othertown, USA',
     '789 Oak Blvd, Somecity, USA',
@@ -9,31 +32,56 @@
     '202 Cedar Ave, Yetanothercity, USA',
   ]
 
-  export let value = ''
-  let suggestions: string[] = []
-  let isLoading = true
-  let isOpen = false
-  let containerRef: HTMLDivElement | null = null
-
-  const getSuggestions = async (suggestion: string) => {
-    isLoading = true
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    suggestions = mockAddresses
-      .filter(address =>
-        address.toLowerCase().includes(suggestion.toLowerCase()),
-      )
-      .slice(0, 5)
-    isLoading = false
+  // Throttle function
+  const throttle = (fn: Function, wait: number) => {
+    const now = Date.now()
+    if (now - lastThrottleTime >= wait) {
+      fn()
+      lastThrottleTime = now
+    }
   }
 
+  // Fetch suggestions with error handling
+  const getSuggestions = async (query: string): Promise<void> => {
+    try {
+      // Don't search if query is shorter than minChars
+      if (query.length < minChars) {
+        suggestions = []
+        isOpen = false
+        return
+      }
+
+      isLoading = true
+      // Simulate API call - replace with real API in production
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      suggestions = mockAddresses
+        .filter(address => address.toLowerCase().includes(query.toLowerCase()))
+        .slice(0, 5)
+      isOpen = true
+    } catch (error) {
+      console.error('Error fetching suggestions:', error)
+      suggestions = []
+    } finally {
+      isLoading = false
+    }
+  }
+
+  // Event handlers
   const handleFocus = () => {
-    isOpen = true
-    getSuggestions(value)
+    if (value.length >= minChars) {
+      isOpen = true
+      getSuggestions(value)
+    }
   }
 
-  const handleBlur = () => {
-    isOpen = false
+  const handleInputChange = (event: Event) => {
+    const inputValue = (event.target as HTMLInputElement).value
+    clearTimeout(debounceTimeout)
+
+    // Throttle and debounce combination
+    debounceTimeout = setTimeout(() => {
+      throttle(() => getSuggestions(inputValue), 500)
+    }, debounceMs)
   }
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -47,44 +95,56 @@
     }
   }
 
-  //   TODO: make this debounce more sophisticated // using lodash but don't want to add a dependency as requested per assignment
-  let debounceTimeout: NodeJS.Timeout
-  const handleInputChange = (event: Event) => {
-    const inputValue = (event.target as HTMLInputElement).value
+  // Cleanup
+  onDestroy(() => {
     clearTimeout(debounceTimeout)
-    debounceTimeout = setTimeout(() => {
-      getSuggestions(inputValue)
-    }, 300)
-  }
+  })
 </script>
 
 <svelte:window on:click={handleClickOutside} />
-<div bind:this={containerRef} class=".relative .w-full">
+<div
+  bind:this={containerRef}
+  class=".relative .w-full"
+  aria-expanded={isOpen}
+  aria-haspopup="listbox"
+>
   <input
     type="text"
-    on:input={handleInputChange}
     bind:value
+    on:input={handleInputChange}
     on:focus={handleFocus}
     class=".focus:outline-none .focus:ring-2 .focus:ring-blue-500 .focus:border-blue-500 .w-full .rounded-lg .border .border-gray-300 .px-4 .py-2 .shadow-sm"
-    placeholder="Enter address..."
+    {placeholder}
+    aria-autocomplete="list"
+    aria-controls="suggestions-list"
   />
-  {#if isOpen}
+
+  {#if isOpen && value.length >= minChars}
     <div
+      id="suggestions-list"
       class=".absolute .z-50 .mt-1 .w-full .rounded-lg .border .border-gray-200 .bg-white .shadow-lg"
+      role="listbox"
     >
       {#if isLoading}
         <div
           class=".flex .items-center .justify-center .p-4 .text-sm .text-gray-500"
+          aria-live="polite"
         >
-          <div class=".mr-2 .animate-spin">⌛</div>
           Loading...
+        </div>
+      {:else if suggestions.length === 0}
+        <div class=".p-4 .text-center .text-sm .text-gray-500">
+          No suggestions found
         </div>
       {:else}
         <div class=".max-h-60 .overflow-y-auto">
-          {#each suggestions as suggestion}
+          {#each suggestions as suggestion, i}
             <button
-              class="hover:. .hover:bg-gray-100 .w-full .px-4 .py-2 .text-left .text-sm .text-gray-700 .transition-colors .duration-150"
+              class=".hover:bg-gray-100 .w-full .px-4 .py-2 .text-left .text-sm .text-gray-700 .transition-colors .duration-150 hover:.bg-black/10"
               on:click={() => handleSuggestionClick(suggestion)}
+              role="option"
+              aria-selected={value === suggestion}
+              id={`suggestion-${i}`}
             >
               {suggestion}
             </button>

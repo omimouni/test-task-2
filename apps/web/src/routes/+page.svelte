@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Feed } from '$lib/pages'
-  import { CommuteModal } from '~ui/widgets'
 </script>
 
 <svelte:head>

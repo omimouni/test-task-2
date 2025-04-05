@@ -1,6 +1,7 @@
-const fs = require('fs');
-const postcss = require('postcss');
-const plugin = require('tailwindcss/plugin');
+
+import fs from 'fs';
+import postcss from 'postcss';
+import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {

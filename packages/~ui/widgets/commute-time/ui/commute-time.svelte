@@ -35,8 +35,15 @@
     const { data, error } = await onLoad()
     loading = false
 
-    if (error || data.status === 'error') return
+    if (error || !data || data.status === 'error') return
     durations = data.payload.durations
+  }
+
+  // Helper function to ensure type safety and handle null cases
+  const shouldHighlight = (mode: string, value: number | null): boolean => {
+    const maxTime =
+      $commuteStore.maxtime[mode as keyof typeof $commuteStore.maxtime]
+    return maxTime !== null && value !== null && maxTime > value
   }
 </script>
 
@@ -83,7 +90,7 @@
                 <div class=".mt-1 .flex .items-center .gap-2">
                   {#each Object.entries(duration.durations) as [mode, value]}
                     <span
-                      class="{$commuteStore.maxtime[mode] > value
+                      class="{shouldHighlight(mode, value)
                         ? '.bg-red-500'
                         : ''} .flex .items-center .gap-1 .rounded .p-1"
                     >
