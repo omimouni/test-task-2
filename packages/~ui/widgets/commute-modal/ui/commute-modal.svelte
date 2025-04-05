@@ -8,6 +8,10 @@
     PencilSVG,
     TrashSVG,
     CheckSVG,
+    CarSVG,
+    BusSVG,
+    BikeSVG,
+    WalkSVG,
   } from '~ui/assets'
 
   const MAX_ADDRESSES = 2
@@ -178,7 +182,7 @@
                       </div>
                       <span class=".text-gray-700 .font-medium">{address}</span>
                     </div>
-                    <div class=".flex .gap-2 .opacity-0 .group-hover:opacity-100 .transition-opacity">
+                    <div class=".flex .gap-2">
                       <Button 
                         class=".p-2 .rounded-full .text-gray-600 .hover:bg-gray-100 .transition-colors"
                         title="Edit address"
@@ -189,6 +193,7 @@
                       <Button 
                         class=".p-2 .rounded-full .text-red-600 .hover:bg-red-50 .transition-colors"
                         title="Delete address"
+                        subtle
                         onClick={() => handleDelete(address)}
                       >
                         <TrashSVG />
@@ -225,30 +230,84 @@
               {/if}
             </div>
           {:else if activeTab === 'maxtime'}
-            <div class=".space-y-4">
-              {#each Object.entries($commuteStore.maxtime) as [mode, value]}
-                <div
-                  class=".flex .items-center .gap-4 .rounded-lg .border .border-gray-200 .p-4 .hover:bg-gray-50"
-                >
-                  <span class=".w-24 .text-gray-700 .font-medium"
-                    >{mode[0].toUpperCase() + mode.slice(1)}</span
+          <div class=".space-y-4">
+            {#each Object.entries($commuteStore.maxtime) as [mode, value]}
+              <div
+                class=".flex .items-center .gap-6 .rounded-lg .p-4"
+              >
+                <div class=".w-32 .flex .items-center .gap-3">
+                  <div class=".text-gray-600">
+                    {#if mode === 'driving'}
+                      <CarSVG class=".h-5 .w-5" />
+                    {:else if mode === 'transit'}
+                      <BusSVG class=".h-5 .w-5" />
+                    {:else if mode === 'biking'}
+                      <BikeSVG class=".h-5 .w-5" />
+                    {:else if mode === 'walking'}
+                      <WalkSVG class=".h-5 .w-5" />
+                    {/if}
+                  </div>
+                  <span class=".text-base .text-gray-900 .capitalize">{mode}</span>
+                </div>
+
+                <div class=".relative .flex-1">
+                  <div 
+                    class=".relative .flex .w-full .items-stretch .rounded-lg .border 
+                      {maxtime[mode] !== null && maxtime[mode] <= 0 ? '.border-red-300' : '.border-gray-200'}"
                   >
-                  <Input
-                    placeholder="Enter time in minutes"
-                    bind:value={maxtime[mode]}
-                    on:input={() => saveMaxtime()}
-                  />
-                  {#if value}
-                    <Button
-                      class=".text-gray-400 .hover:text-gray-600 .p-2 .rounded-full .hover:bg-gray-100"
-                      onClick={() => resetMaxtime(mode)}
+                    <input
+                      type="number"
+                      min="1"
+                      placeholder="0"
+                      bind:value={maxtime[mode]}
+                      on:input={() => saveMaxtime()}
+                      class=".w-full 
+                        .px-4 
+                        .py-2.5
+                        .text-right 
+                        .text-gray-900
+                        .placeholder-gray-400
+                        .focus:outline-none
+                        .appearance-none
+                        .bg-transparent"
+                    />
+                    <div 
+                      class=".flex 
+                        .items-center 
+                        .px-4
+                        .border-l 
+                        .border-inherit
+                        .text-gray-500"
                     >
-                      <XSVG class=".h-5 .w-5" />
+                      min
+                    </div>
+                  </div>
+                  {#if maxtime[mode] !== null && maxtime[mode] <= 0}
+                    <div class=".absolute .-bottom-6 .left-0 .flex .items-center .gap-1.5 .text-red-500">
+                      <XSVG class=".h-3.5 .w-3.5" />
+                      <span class=".text-sm">Please enter a positive number</span>
+                    </div>
+                  {/if}
+                </div>
+
+                <div class=".w-10 .flex .items-center .justify-center">
+                  {#if maxtime[mode] !== null}
+                    <Button
+                      class=".text-gray-400 
+                        .p-2 
+                        .rounded-full 
+                        .hover:bg-gray-100
+                        .transition-colors"
+                      onClick={() => resetMaxtime(mode)}
+                      title="Reset time limit"
+                    >
+                      <XSVG class=".h-4 .w-4" />
                     </Button>
                   {/if}
                 </div>
-              {/each}
-            </div>
+              </div>
+            {/each}
+          </div>
           {/if}
         </div>
       </div>
